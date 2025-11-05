@@ -97,7 +97,7 @@ class UserPreferences(private val context: Context) {
         }
     }
 
-    // Eliminar producto del carrito
+    // Eliminar producto del carrito (arreglo para repetidos
     suspend fun removeFromCart(productName: String) {
         context.dataStore.edit { prefs ->
             val currentUser = prefs[CURRENT_USER_EMAIL] ?: return@edit
@@ -106,12 +106,18 @@ class UserPreferences(private val context: Context) {
 
             val userCart = allCarts.optJSONArray(currentUser) ?: JSONArray()
             val newCart = JSONArray()
+            var removed = false
+
             for (i in 0 until userCart.length()) {
                 val item = userCart.getString(i)
-                if (item != productName) newCart.put(item)
+                if (!removed && item == productName) {
+                    removed = true // elimina solo la primera vez que coincide
+                } else {
+                    newCart.put(item)
+                }
             }
-            allCarts.put(currentUser, newCart)
 
+            allCarts.put(currentUser, newCart)
             prefs[CART_JSON] = allCarts.toString()
         }
     }

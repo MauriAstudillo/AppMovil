@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Close
@@ -104,7 +105,8 @@ fun TextScr(navCtrl: NavHostController) {
             } else {
                 // 🛍️ Mostrar productos del carrito
                 LazyColumn {
-                    items(productos, key = { it }) { producto ->
+                    // ✅ Usamos itemsIndexed para generar una key única
+                    itemsIndexed(productos) { index, producto ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
