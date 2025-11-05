@@ -8,17 +8,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,8 +37,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,6 +60,7 @@ fun TextScr(navCtrl: NavHostController) {
     val scope = rememberCoroutineScope()
 
     val productos by viewModel.cartItems.collectAsState(initial = emptyList())
+    var compraRealizada by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -95,13 +101,16 @@ fun TextScr(navCtrl: NavHostController) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Tu carrito está vacío",
+                        text = if (compraRealizada) "Compra realizada"
+                        else "Tu carrito está vacío",
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             } else {
-                LazyColumn {
+                LazyColumn(
+                    modifier = Modifier.weight(1f)
+                ) {
                     itemsIndexed(productos) { index, producto ->
                         Row(
                             modifier = Modifier
@@ -133,6 +142,28 @@ fun TextScr(navCtrl: NavHostController) {
                             }
                         }
                     }
+                }
+
+                Button(
+                    onClick = {
+                        scope.launch {
+                            viewModel.clearCart()
+                            compraRealizada = true
+                            kotlinx.coroutines.delay(2000)
+                            compraRealizada = false
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .height(55.dp),
+                    shape = RoundedCornerShape(50)
+                ) {
+                    Text(
+                        text = "Finalizar compra",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White
+                    )
                 }
             }
         }

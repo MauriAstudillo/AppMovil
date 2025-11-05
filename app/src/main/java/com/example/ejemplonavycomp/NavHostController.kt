@@ -1,33 +1,55 @@
 package com.example.ejemplonavycomp
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.ejemplonavycomp.screens.HomeScr
-import com.example.ejemplonavycomp.screens.LoginScr
-import com.example.ejemplonavycomp.screens.PerfilScr
-import com.example.ejemplonavycomp.screens.Producto1Scr
-import com.example.ejemplonavycomp.screens.RegistroScr
-import com.example.ejemplonavycomp.screens.TextScr
+import com.example.ejemplonavycomp.screens.*
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun NavHostController() {
-
     val navCtrl = rememberNavController()
 
     NavHost(
         navController = navCtrl,
-        startDestination = "home"
+        startDestination = "home",
 
-    ){
-        composable(route="home"){ HomeScr(navCtrl) }
-        composable(route="texto"){ TextScr(navCtrl) }
-        composable(route="login"){ LoginScr(navCtrl) }
-        composable(route="producto1"){Producto1Scr(navCtrl)}
-        composable(route="perfil"){PerfilScr(navCtrl)}
-        composable(route="registro"){RegistroScr(navCtrl)}
+        enterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { it },
+                animationSpec = tween(500)
+            ) + fadeIn(animationSpec = tween(600))
+        },
+        exitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { -it },
+                animationSpec = tween(500)
+            ) + fadeOut(animationSpec = tween(600))
+        },
+        popEnterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { -it },
+                animationSpec = tween(500)
+            ) + fadeIn(animationSpec = tween(600))
+        },
+        popExitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { it },
+                animationSpec = tween(500)
+            ) + fadeOut(animationSpec = tween(600))
+        }
+    ) {
+        composable("home") { HomeScr(navCtrl) }
+        composable("texto") { TextScr(navCtrl) }
+        composable("login") { LoginScr(navCtrl) }
+        composable("producto1") { Producto1Scr(navCtrl) }
+        composable("perfil") { PerfilScr(navCtrl) }
+        composable("registro") { RegistroScr(navCtrl) }
     }
-
 }
 

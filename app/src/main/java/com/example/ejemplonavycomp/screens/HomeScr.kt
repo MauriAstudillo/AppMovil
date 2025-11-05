@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
@@ -122,20 +123,21 @@ fun HomeScr(navCtrl: NavHostController) {
                             navCtrl.navigate(route="producto1")
                         }
                 ) {
+                    //tengo que añadir imagen xddd
                     Box(
                         modifier = Modifier.padding(horizontal = 60.dp, vertical = 16.dp)
                     ) {
-                        Icon(Icons.Filled.Check, contentDescription = "Check mark")
+                        Icon(Icons.Default.Keyboard, contentDescription = "Check mark")
                     }
                     Text(
-                        text = "Producto 1",
+                        text = "Teclado Gamer",
                         modifier = Modifier
                             .padding(horizontal=35.dp, vertical = 16.dp ),
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "Precio",
+                        text = "$25.990",
                         modifier = Modifier.padding(horizontal = 50.dp, vertical = 5.dp)
                     )
 

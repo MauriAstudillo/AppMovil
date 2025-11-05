@@ -89,7 +89,7 @@ fun Producto1Scr(navCtrl: NavHostController) {
             verticalArrangement = Arrangement.Top
         ) {
 
-            // Imagen del producto
+            // tengo que añadir la imagen xdd
             Box(
                 modifier = Modifier
                     .size(180.dp)
@@ -135,12 +135,10 @@ fun Producto1Scr(navCtrl: NavHostController) {
 
             Button(
                 onClick = {
-                    // ✅ Añadir al carrito usando corrutina
                     scope.launch {
                         viewModel.addToCart("Teclado Gamer")
                     }
 
-                    // ✅ Luego navegar al carrito
                     navCtrl.navigate(route = "texto")
                 },
                 modifier = Modifier

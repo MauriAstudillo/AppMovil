@@ -62,4 +62,6 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.coroutines.android.v181)
     implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.navigation.compose.v277)
+    implementation(libs.androidx.compose.animation)
 }

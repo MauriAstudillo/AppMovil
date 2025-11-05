@@ -1,5 +1,7 @@
 [versions]
+accompanistNavigationAnimation = "0.36.0"
 agp = "8.12.3"
+animation = "1.9.4"
 datastorePreferences = "1.1.7"
 kotlin = "2.0.21"
 coreKtx = "1.17.0"
@@ -13,14 +15,18 @@ activityCompose = "1.11.0"
 composeBom = "2024.09.00"
 #navigationCompose = "2.9.5"
 materialIconsExtended = "1.7.8"
+navigationCompose = "2.7.7"
 navigationComposeVersion = "2.9.4"
 material3 = "1.4.0"
 foundationLayout = "1.9.4"
 
 [libraries]
+accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanistNavigationAnimation" }
+androidx-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-navigation-compose-v277 = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
