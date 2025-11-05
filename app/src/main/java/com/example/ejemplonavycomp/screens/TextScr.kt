@@ -54,7 +54,6 @@ fun TextScr(navCtrl: NavHostController) {
     val viewModel = remember { RegistroViewModel(context) }
     val scope = rememberCoroutineScope()
 
-    // 🛒 Productos guardados en DataStore
     val productos by viewModel.cartItems.collectAsState(initial = emptyList())
 
     Scaffold(
@@ -91,7 +90,6 @@ fun TextScr(navCtrl: NavHostController) {
                 .fillMaxSize()
         ) {
             if (productos.isEmpty()) {
-                // 🧺 Carrito vacío
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -103,9 +101,7 @@ fun TextScr(navCtrl: NavHostController) {
                     )
                 }
             } else {
-                // 🛍️ Mostrar productos del carrito
                 LazyColumn {
-                    // ✅ Usamos itemsIndexed para generar una key única
                     itemsIndexed(productos) { index, producto ->
                         Row(
                             modifier = Modifier
