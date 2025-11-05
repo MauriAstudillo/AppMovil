@@ -56,7 +56,7 @@ fun HomeScr(navCtrl: NavHostController) {
                         })
                 },
                 actions = {
-                    IconButton(onClick = {  }) {
+                    IconButton(onClick = { }) {
                         Icon(
                             imageVector = Icons.Filled.ShoppingCart,
                             contentDescription = "Carrito",
@@ -65,7 +65,7 @@ fun HomeScr(navCtrl: NavHostController) {
                             }
                         )
                     }
-                    IconButton(onClick = { /* acción al hacer clic */ }) {
+                    IconButton(onClick = { }) {
                         Icon(
                             imageVector = Icons.Filled.AccountCircle,
                             contentDescription = "Cuenta",
