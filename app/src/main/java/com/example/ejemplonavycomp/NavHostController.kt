@@ -50,6 +50,7 @@ fun NavHostController() {
         composable("producto1") { Producto1Scr(navCtrl) }
         composable("perfil") { PerfilScr(navCtrl) }
         composable("registro") { RegistroScr(navCtrl) }
+        composable("producto2"){Producto2Scr(navCtrl)}
     }
 }
 

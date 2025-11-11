@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Mouse
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -110,21 +111,25 @@ fun HomeScr(navCtrl: NavHostController) {
                     ),
                     modifier = Modifier
                         .size(width = 150.dp, height = 150.dp)
+                        .clickable{
+                            navCtrl.navigate(route="producto2")
+                        }
                 ) {
                     Box(
                         modifier = Modifier.padding(horizontal = 60.dp, vertical = 16.dp)
                     ) {
-                        Icon(Icons.Filled.Check, contentDescription = "Check mark")
+                        Icon(Icons.Default.Mouse, contentDescription = "Mouse")
                     }
                     Text(
-                        text = "Producto 2",
+                        text = "Mouse Gamer RGB",
                         modifier = Modifier
                             .padding(horizontal=35.dp, vertical = 16.dp),
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold
+
                     )
                     Text(
-                        text = "Precio",
+                        text = "$18.990",
                         modifier = Modifier.padding(horizontal = 50.dp, vertical = 5.dp)
                     )
                 }
