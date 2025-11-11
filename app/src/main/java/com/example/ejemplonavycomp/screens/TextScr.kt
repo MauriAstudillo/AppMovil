@@ -65,35 +65,50 @@ fun TextScr(navCtrl: NavHostController) {
     val scope = rememberCoroutineScope()
 
     val productos by viewModel.cartItems.collectAsState(initial = emptyList())
+    val currentUser by viewModel.currentUserEmail.collectAsState(initial = null)
     var compraRealizada by remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
+    // ✅ Si no hay usuario logeado, mostrar mensaje de inicio de sesión
+    if (currentUser.isNullOrEmpty()) {
+        Scaffold(
+            topBar = { AppTopBar(navCtrl) }
+        ) { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
                     Text(
-                        text = "Tienda LEVELUP",
-                        modifier = Modifier.clickable {
-                            navCtrl.navigate(route = "home")
-                        })
-                },
-                actions = {
-                    IconButton(onClick = { }) {
-                        Icon(
-                            imageVector = Icons.Filled.AccountCircle,
-                            contentDescription = "Cuenta",
-                            modifier = Modifier.clickable {
-                                navCtrl.navigate(route = "login")
-                            }
-                        )
+                        text = "Debes iniciar sesión para ver tu carrito",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Button(
+                        onClick = { navCtrl.navigate("login") },
+                        shape = RoundedCornerShape(50),
+                        modifier = Modifier
+                            .width(200.dp)
+                            .height(50.dp)
+                    ) {
+                        Text("Iniciar sesión")
                     }
-                },
-                colors = topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
-                )
-            )
+                }
+            }
         }
+        return
+    }
+
+    // 🛍️ Si el usuario está logeado, mostrar el carrito normal
+    Scaffold(
+        topBar = { AppTopBar(navCtrl) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -116,7 +131,6 @@ fun TextScr(navCtrl: NavHostController) {
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
-                    // 🔹 Clave única combinando nombre y posición
                     itemsIndexed(
                         productos,
                         key = { index, item -> "$item-$index" }
@@ -148,7 +162,6 @@ fun TextScr(navCtrl: NavHostController) {
 
                                 IconButton(onClick = {
                                     scope.launch {
-                                        // 🕐 primero animamos, luego borramos solo ese
                                         visible = false
                                         delay(300)
                                         viewModel.removeFromCart(producto)
