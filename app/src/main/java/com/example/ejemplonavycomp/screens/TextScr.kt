@@ -1,5 +1,9 @@
 package com.example.ejemplonavycomp.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -49,6 +53,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.ejemplonavycomp.viewmodel.RegistroViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -111,34 +116,50 @@ fun TextScr(navCtrl: NavHostController) {
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
-                    itemsIndexed(productos) { index, producto ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Filled.ShoppingCart,
-                                    contentDescription = "Carrito",
-                                    modifier = Modifier.size(24.dp)
-                                )
-                                Spacer(modifier = Modifier.width(16.dp))
-                                Text(text = producto)
-                            }
+                    // 🔹 Clave única combinando nombre y posición
+                    itemsIndexed(
+                        productos,
+                        key = { index, item -> "$item-$index" }
+                    ) { index, producto ->
 
-                            IconButton(onClick = {
-                                scope.launch {
-                                    viewModel.removeFromCart(producto)
+                        var visible by remember { mutableStateOf(true) }
+
+                        AnimatedVisibility(
+                            visible = visible,
+                            exit = fadeOut(animationSpec = tween(300)) +
+                                    slideOutHorizontally(targetOffsetX = { -300 })
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Filled.ShoppingCart,
+                                        contentDescription = "Carrito",
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(16.dp))
+                                    Text(text = producto)
                                 }
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = "Eliminar",
-                                    tint = Color.Red
-                                )
+
+                                IconButton(onClick = {
+                                    scope.launch {
+                                        // 🕐 primero animamos, luego borramos solo ese
+                                        visible = false
+                                        delay(300)
+                                        viewModel.removeFromCart(producto)
+                                    }
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = "Eliminar",
+                                        tint = Color.Red
+                                    )
+                                }
                             }
                         }
                     }
@@ -149,7 +170,7 @@ fun TextScr(navCtrl: NavHostController) {
                         scope.launch {
                             viewModel.clearCart()
                             compraRealizada = true
-                            kotlinx.coroutines.delay(2000)
+                            delay(2000)
                             compraRealizada = false
                         }
                     },

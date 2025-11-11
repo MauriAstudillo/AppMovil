@@ -47,45 +47,7 @@ import androidx.navigation.compose.NavHost
 fun HomeScr(navCtrl: NavHostController) {
     Scaffold(
         /*ELEMENTOS SCAFOLD*/
-        topBar = {
-            TopAppBar(
-                title={
-                    Text(text="Tienda LEVELUP",
-                        modifier = Modifier.clickable{
-                            navCtrl.navigate(route = "home")
-                        })
-                },
-                actions = {
-                    IconButton(onClick = { }) {
-                        Icon(
-                            imageVector = Icons.Filled.ShoppingCart,
-                            contentDescription = "Carrito",
-                            modifier = Modifier.clickable{
-                                navCtrl.navigate(route = "texto")
-                            }
-                        )
-                    }
-                    IconButton(onClick = { }) {
-                        Icon(
-                            imageVector = Icons.Filled.AccountCircle,
-                            contentDescription = "Cuenta",
-                            modifier = Modifier.clickable{
-                                navCtrl.navigate(route="login")
-                            }
-                        )
-                    }
-                },
-
-                colors = topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
-
-                )
-
-
-            )
-
-        }
+        topBar = { AppTopBar(navCtrl) }
     )
     {paddingValues ->
         /*CONTENIDO*/

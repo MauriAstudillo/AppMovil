@@ -17,10 +17,10 @@ class UserPreferences(private val context: Context) {
     companion object {
         val USERS_JSON = stringPreferencesKey("users_json")
         val CURRENT_USER_EMAIL = stringPreferencesKey("current_user")
-        val CART_JSON = stringPreferencesKey("cart_json") // 🆕 carrito
+        val CART_JSON = stringPreferencesKey("cart_json")
     }
 
-    // guardar tanto usuario como contraseña
+    // --- Usuarios ---
     suspend fun saveUser(email: String, password: String) {
         context.dataStore.edit { prefs ->
             val jsonString = prefs[USERS_JSON]
@@ -30,19 +30,16 @@ class UserPreferences(private val context: Context) {
         }
     }
 
-    // guardar usuario
     suspend fun setCurrentUser(email: String) {
         context.dataStore.edit { prefs ->
             prefs[CURRENT_USER_EMAIL] = email
         }
     }
 
-    // devuelve el correo del usuario actual
     val getCurrentUserEmail: Flow<String?> = context.dataStore.data.map { prefs ->
         prefs[CURRENT_USER_EMAIL]
     }
 
-    // devuelve contraseña del usuario actual
     val getCurrentUserPassword: Flow<String?> = context.dataStore.data.map { prefs ->
         val jsonString = prefs[USERS_JSON]
         val currentEmail = prefs[CURRENT_USER_EMAIL]
@@ -52,7 +49,6 @@ class UserPreferences(private val context: Context) {
         } else null
     }
 
-    // Devolver contraseña
     suspend fun getPasswordForUser(email: String): String? {
         val prefs = context.dataStore.data.map { it[USERS_JSON] }.firstOrNull()
         return prefs?.let {
@@ -61,14 +57,13 @@ class UserPreferences(private val context: Context) {
         }
     }
 
-    // Cerrar sesion
     suspend fun logout() {
         context.dataStore.edit { prefs ->
             prefs.remove(CURRENT_USER_EMAIL)
         }
     }
 
-    //Obtener carrito segun el usuario
+    // --- Carrito ---
     val getCartItems: Flow<List<String>> = context.dataStore.data.map { prefs ->
         val cartJson = prefs[CART_JSON]
         val currentUser = prefs[CURRENT_USER_EMAIL]
@@ -82,7 +77,6 @@ class UserPreferences(private val context: Context) {
         } else emptyList()
     }
 
-    // Añadir al carrito
     suspend fun addToCart(productName: String) {
         context.dataStore.edit { prefs ->
             val currentUser = prefs[CURRENT_USER_EMAIL] ?: return@edit
@@ -97,7 +91,7 @@ class UserPreferences(private val context: Context) {
         }
     }
 
-    // Eliminar producto del carrito (arreglo para repetidos
+    // ✅ Eliminar solo una instancia del producto (evita borrar todos los duplicados)
     suspend fun removeFromCart(productName: String) {
         context.dataStore.edit { prefs ->
             val currentUser = prefs[CURRENT_USER_EMAIL] ?: return@edit
@@ -109,9 +103,9 @@ class UserPreferences(private val context: Context) {
             var removed = false
 
             for (i in 0 until userCart.length()) {
-                val item = userCart.getString(i)
+                val item = userCart.optString(i)
                 if (!removed && item == productName) {
-                    removed = true // elimina solo la primera vez que coincide
+                    removed = true // ✅ elimina solo la primera coincidencia
                 } else {
                     newCart.put(item)
                 }
@@ -122,7 +116,6 @@ class UserPreferences(private val context: Context) {
         }
     }
 
-    // Vacia el carrito
     suspend fun clearCart() {
         context.dataStore.edit { prefs ->
             val currentUser = prefs[CURRENT_USER_EMAIL] ?: return@edit

@@ -49,36 +49,7 @@ fun Producto1Scr(navCtrl: NavHostController) {
     val scope = rememberCoroutineScope()
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Tienda LEVELUP",
-                        modifier = Modifier.clickable {
-                            navCtrl.navigate(route = "home")
-                        }
-                    )
-                },
-                actions = {
-                    IconButton(onClick = { navCtrl.navigate(route = "texto") }) {
-                        Icon(
-                            imageVector = Icons.Filled.ShoppingCart,
-                            contentDescription = "Carrito"
-                        )
-                    }
-                    IconButton(onClick = { navCtrl.navigate(route = "login") }) {
-                        Icon(
-                            imageVector = Icons.Filled.AccountCircle,
-                            contentDescription = "Cuenta"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
-                )
-            )
-        }
+        topBar = { AppTopBar(navCtrl) }
     ) { paddingValues ->
         Column(
             modifier = Modifier

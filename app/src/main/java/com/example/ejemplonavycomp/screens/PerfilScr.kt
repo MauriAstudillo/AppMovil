@@ -64,30 +64,7 @@ fun PerfilScr(navCtrl: NavHostController) {
     val currentPassword by viewModel.currentUserPassword.collectAsState()
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Tienda LEVELUP",
-                        modifier = Modifier.clickable {
-                            navCtrl.navigate("home")
-                        }
-                    )
-                },
-                actions = {
-                    IconButton(onClick = { navCtrl.navigate("texto") }) {
-                        Icon(Icons.Filled.ShoppingCart, contentDescription = "Carrito")
-                    }
-                    IconButton(onClick = { navCtrl.navigate("login") }) {
-                        Icon(Icons.Filled.AccountCircle, contentDescription = "Cuenta")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
-                )
-            )
-        }
+        topBar = { AppTopBar(navCtrl) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
