@@ -12,7 +12,7 @@ interface TheMealDbApiService {
      * Define una función suspendida para obtener las categorías.
      * La anotación @GET especifica la ruta del endpoint relativa a la URL base.
      */
-    @GET("api/json/v1/1/categories.php")
+    @GET("2c21923f0c7c8ce15f8b12f5121cedef/raw/14a272f866eac5724d66375489306da4a5db97a2/productos.json")
     suspend fun getCategories(): CategoryResponse
 }
 
@@ -21,7 +21,7 @@ interface TheMealDbApiService {
  * Esto asegura que solo tengamos una instancia de Retrofit para toda la app.
  */
 object RetrofitInstance {
-    private const val BASE_URL = "https://www.themealdb.com/"
+    private const val BASE_URL = "https://gist.githubusercontent.com/MauriAstudillo/"
 
     // Usamos 'lazy' para que la instancia de Retrofit solo se cree
     // la primera vez que se accede a 'api'.
