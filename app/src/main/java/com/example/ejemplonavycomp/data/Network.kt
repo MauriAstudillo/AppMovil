@@ -12,7 +12,7 @@ interface Tiendalvlup {
      * Define una función suspendida para obtener las categorías.
      * La anotación @GET especifica la ruta del endpoint relativa a la URL base.
      */
-    @GET("2c21923f0c7c8ce15f8b12f5121cedef/raw/8216ae320580b192f657788ac73b9466451621a5/productos.json")
+    @GET("2c21923f0c7c8ce15f8b12f5121cedef/raw/9389f212b62ca70e554a3000a867260c3448d585/productos.json")
     suspend fun getCategories(): CategoryResponse
 }
 
