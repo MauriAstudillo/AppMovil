@@ -7,7 +7,7 @@ import retrofit2.http.GET
 /**
  * Interfaz que define los endpoints de la API.
  */
-interface TheMealDbApiService {
+interface Tiendalvlup {
     /**
      * Define una función suspendida para obtener las categorías.
      * La anotación @GET especifica la ruta del endpoint relativa a la URL base.
@@ -25,13 +25,13 @@ object RetrofitInstance {
 
     // Usamos 'lazy' para que la instancia de Retrofit solo se cree
     // la primera vez que se accede a 'api'.
-    val api: TheMealDbApiService by lazy {
+    val api: Tiendalvlup by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             // Agregamos un convertidor de Gson para parsear el JSON
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             // Creamos una implementación de nuestra interfaz ApiService
-            .create(TheMealDbApiService::class.java)
+            .create(Tiendalvlup::class.java)
     }
 }

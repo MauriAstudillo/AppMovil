@@ -26,5 +26,8 @@ data class Category(
     val thumbnail: String,
 
     @SerializedName("strCategoryDescription")
-    val description: String
+    val description: String,
+
+    @SerializedName("price")
+    val price: String
 )
