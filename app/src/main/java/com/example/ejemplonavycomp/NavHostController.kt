@@ -5,9 +5,11 @@ import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.ejemplonavycomp.screens.*
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -47,10 +49,18 @@ fun NavHostController() {
         composable("home") { HomeScr(navCtrl) }
         composable("texto") { TextScr(navCtrl) }
         composable("login") { LoginScr(navCtrl) }
-        composable("producto1") { Producto1Scr(navCtrl) }
         composable("perfil") { PerfilScr(navCtrl) }
         composable("registro") { RegistroScr(navCtrl) }
         composable("producto2"){Producto2Scr(navCtrl)}
+        composable(
+            route = "producto/{productId}",
+            arguments = listOf(
+                navArgument("productId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId") ?: return@composable
+            Producto1Scr(navCtrl = navCtrl, productId = productId)
+        }
     }
 }
 
