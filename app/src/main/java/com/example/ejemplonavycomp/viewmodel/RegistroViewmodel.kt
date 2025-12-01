@@ -13,6 +13,7 @@ class RegistroViewModel(context: Context) : ViewModel() {
 
     private val prefs = UserPreferences(context)
 
+    // --- Usuario actual ---
     val currentUserEmail = prefs.getCurrentUserEmail.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(),
@@ -25,12 +26,27 @@ class RegistroViewModel(context: Context) : ViewModel() {
         null
     )
 
+    // --- Carrito ---
     val cartItems = prefs.getCartItems.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(),
         emptyList()
     )
 
+    // --- Foto de perfil 🖼 ---
+    val profilePictureUri = prefs.profilePictureUri.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        null
+    )
+
+    fun updateProfilePicture(uri: String) {
+        viewModelScope.launch {
+            prefs.saveProfilePicture(uri)
+        }
+    }
+
+    // --- Registro / login ---
     fun saveUser(email: String, password: String) {
         viewModelScope.launch {
             prefs.saveUser(email, password)
@@ -53,6 +69,7 @@ class RegistroViewModel(context: Context) : ViewModel() {
         return prefs.getPasswordForUser(email)
     }
 
+    // --- Carrito acciones ---
     fun addToCart(productName: String) {
         viewModelScope.launch {
             prefs.addToCart(productName)

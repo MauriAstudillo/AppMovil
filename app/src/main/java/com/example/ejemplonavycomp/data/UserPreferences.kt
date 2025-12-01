@@ -18,6 +18,9 @@ class UserPreferences(private val context: Context) {
         val USERS_JSON = stringPreferencesKey("users_json")
         val CURRENT_USER_EMAIL = stringPreferencesKey("current_user")
         val CART_JSON = stringPreferencesKey("cart_json")
+
+        // 🆕 URI de la foto de perfil (global por ahora)
+        val PROFILE_PICTURE_URI = stringPreferencesKey("profile_picture_uri")
     }
 
     // --- Usuarios ---
@@ -91,7 +94,7 @@ class UserPreferences(private val context: Context) {
         }
     }
 
-    // ✅ Eliminar solo una instancia del producto (evita borrar todos los duplicados)
+    // Eliminar solo una instancia del producto
     suspend fun removeFromCart(productName: String) {
         context.dataStore.edit { prefs ->
             val currentUser = prefs[CURRENT_USER_EMAIL] ?: return@edit
@@ -105,7 +108,7 @@ class UserPreferences(private val context: Context) {
             for (i in 0 until userCart.length()) {
                 val item = userCart.optString(i)
                 if (!removed && item == productName) {
-                    removed = true // ✅ elimina solo la primera coincidencia
+                    removed = true
                 } else {
                     newCart.put(item)
                 }
@@ -123,6 +126,17 @@ class UserPreferences(private val context: Context) {
             val allCarts = if (cartJson != null) JSONObject(cartJson) else JSONObject()
             allCarts.put(currentUser, JSONArray())
             prefs[CART_JSON] = allCarts.toString()
+        }
+    }
+
+    // --- Foto de perfil ---
+    val profilePictureUri: Flow<String?> = context.dataStore.data.map { prefs ->
+        prefs[PROFILE_PICTURE_URI]
+    }
+
+    suspend fun saveProfilePicture(uri: String) {
+        context.dataStore.edit { prefs ->
+            prefs[PROFILE_PICTURE_URI] = uri
         }
     }
 }

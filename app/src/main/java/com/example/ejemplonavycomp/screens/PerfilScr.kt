@@ -1,6 +1,9 @@
 package com.example.ejemplonavycomp.screens
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,10 +36,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.ejemplonavycomp.viewmodel.RegistroViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,7 +53,20 @@ fun PerfilScr(navCtrl: NavHostController) {
     val currentEmail by viewModel.currentUserEmail.collectAsState()
     val currentPassword by viewModel.currentUserPassword.collectAsState()
 
+    // Foto de perfil
+    val profilePicUri by viewModel.profilePictureUri.collectAsState()
+
     var showPassword by remember { mutableStateOf(false) }
+
+    // Elegir imagen
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let {
+            // datastore
+            viewModel.updateProfilePicture(it.toString())
+        }
+    }
 
     Scaffold(
         topBar = { AppTopBar(navCtrl) }
@@ -62,20 +80,36 @@ fun PerfilScr(navCtrl: NavHostController) {
             verticalArrangement = Arrangement.Top
         ) {
 
-            // Avatar grande
+            // defecto
             Box(
                 modifier = Modifier
                     .size(120.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer),
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .clickable {
+                        // Abrir selector de imagen
+                        imagePickerLauncher.launch("image/*")
+                    },
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Filled.AccountCircle,
-                    contentDescription = "Avatar usuario",
-                    modifier = Modifier.size(90.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
+                if (profilePicUri.isNullOrEmpty()) {
+                    // Default: icono AccountCircle
+                    Icon(
+                        imageVector = Icons.Filled.AccountCircle,
+                        contentDescription = "Avatar usuario",
+                        modifier = Modifier.size(90.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                } else {
+                    // Si hay foto guardada: mostrarla
+                    AsyncImage(
+                        model = profilePicUri,
+                        contentDescription = "Foto de perfil",
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
