@@ -13,12 +13,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -63,7 +65,6 @@ fun PerfilScr(navCtrl: NavHostController) {
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         uri?.let {
-            // datastore
             viewModel.updateProfilePicture(it.toString())
         }
     }
@@ -80,34 +81,57 @@ fun PerfilScr(navCtrl: NavHostController) {
             verticalArrangement = Arrangement.Top
         ) {
 
-            // defecto
+
             Box(
                 modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-                    .clickable {
-                        // Abrir selector de imagen
-                        imagePickerLauncher.launch("image/*")
-                    },
-                contentAlignment = Alignment.Center
+                    .size(120.dp),
+                contentAlignment = Alignment.BottomEnd
             ) {
-                if (profilePicUri.isNullOrEmpty()) {
-                    // Default: icono AccountCircle
+
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .clickable {
+                            // Abrir selector de imagen
+                            imagePickerLauncher.launch("image/*")
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (profilePicUri.isNullOrEmpty()) {
+                        Icon(
+                            imageVector = Icons.Filled.AccountCircle,
+                            contentDescription = "Avatar usuario",
+                            modifier = Modifier.size(90.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    } else {
+                        AsyncImage(
+                            model = profilePicUri,
+                            contentDescription = "Foto de perfil",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .offset(x = 4.dp, y = 4.dp) // pequeño desplazamiento hacia afuera
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary)
+                        .clickable {
+                            imagePickerLauncher.launch("image/*")
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
                     Icon(
-                        imageVector = Icons.Filled.AccountCircle,
-                        contentDescription = "Avatar usuario",
-                        modifier = Modifier.size(90.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                } else {
-                    // Si hay foto guardada: mostrarla
-                    AsyncImage(
-                        model = profilePicUri,
-                        contentDescription = "Foto de perfil",
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        contentScale = ContentScale.Crop
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Cambiar foto de perfil",
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(18.dp)
                     )
                 }
             }
@@ -126,7 +150,6 @@ fun PerfilScr(navCtrl: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Nombre de usuario / correo
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -144,7 +167,6 @@ fun PerfilScr(navCtrl: NavHostController) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Contraseña con ocultar/mostrar
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
