@@ -1,12 +1,12 @@
 package com.example.ejemplonavycomp.screens
-
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -26,8 +26,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.ejemplonavycomp.ui.theme.Azulelectrico
 import com.example.ejemplonavycomp.viewmodel.RegistroViewModel
 import kotlinx.coroutines.delay
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,6 +47,27 @@ fun RegistroScr(navCtrl: NavHostController) {
     var confirmPassword by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
     var successMessage by remember { mutableStateOf("") }
+
+    val shakeOffset = remember { Animatable(0f) }
+
+    LaunchedEffect(errorMessage) {
+        if (errorMessage.isNotEmpty()) {
+            shakeOffset.snapTo(0f)
+            shakeOffset.animateTo(
+                targetValue = 0f,
+                animationSpec = keyframes {
+                    durationMillis = 400
+                    -8f at 50
+                    8f at 100
+                    -6f at 150
+                    6f at 200
+                    -3f at 250
+                    3f at 300
+                    0f at 400
+                }
+            )
+        }
+    }
 
     Scaffold(
         topBar = { AppTopBar(navCtrl) }
@@ -84,6 +112,8 @@ fun RegistroScr(navCtrl: NavHostController) {
                 singleLine = true
             )
 
+            Spacer(modifier = Modifier.height(16.dp))
+
             Button(
                 onClick = {
                     when {
@@ -103,17 +133,32 @@ fun RegistroScr(navCtrl: NavHostController) {
                         }
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(50),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Azulelectrico,
+                    contentColor = Color.Black
+                )
             ) {
-                Text("Registrar")
+                Text(
+                    text = "Registrar",
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
 
             if (errorMessage.isNotEmpty()) {
                 Text(
                     text = errorMessage,
                     color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(top = 16.dp)
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    modifier = Modifier
+                        .padding(top = 20.dp)
+                        .offset(x = shakeOffset.value.dp)
                 )
             }
 
@@ -121,11 +166,13 @@ fun RegistroScr(navCtrl: NavHostController) {
                 Text(
                     text = successMessage,
                     color = Color(0xFF4CAF50),
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(top = 16.dp)
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    modifier = Modifier.padding(top = 20.dp)
                 )
 
-                // Delay para ir al login
                 LaunchedEffect(successMessage) {
                     delay(1200)
                     navCtrl.navigate("login")
