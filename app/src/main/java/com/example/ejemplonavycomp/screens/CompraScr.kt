@@ -85,10 +85,7 @@ fun CompraScr(navCtrl: NavHostController) {
     val productos by registroVM.cartItems.collectAsState(initial = emptyList())
     val currentUser by registroVM.currentUserEmail.collectAsState(initial = null)
     val uiState by categoryVM.uiState.collectAsState()
-
-    // Estado para mostrar animación de compra realizada
     var compraRealizada by remember { mutableStateOf(false) }
-    // Lista de productos que se mostrará en el resumen de la animación
     var resumenCompra by remember { mutableStateOf<List<Category>>(emptyList()) }
 
     if (currentUser.isNullOrEmpty()) {

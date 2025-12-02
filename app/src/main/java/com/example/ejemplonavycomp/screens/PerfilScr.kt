@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -44,6 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.example.ejemplonavycomp.ui.theme.Azulelectrico
 import com.example.ejemplonavycomp.viewmodel.RegistroViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,13 +56,8 @@ fun PerfilScr(navCtrl: NavHostController) {
 
     val currentEmail by viewModel.currentUserEmail.collectAsState()
     val currentPassword by viewModel.currentUserPassword.collectAsState()
-
-    // Foto de perfil
     val profilePicUri by viewModel.profilePictureUri.collectAsState()
-
     var showPassword by remember { mutableStateOf(false) }
-
-    // Elegir imagen
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
@@ -119,7 +116,7 @@ fun PerfilScr(navCtrl: NavHostController) {
                 Box(
                     modifier = Modifier
                         .size(32.dp)
-                        .offset(x = 4.dp, y = 4.dp) // pequeño desplazamiento hacia afuera
+                        .offset(x = 4.dp, y = 4.dp)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primary)
                         .clickable {
@@ -208,12 +205,15 @@ fun PerfilScr(navCtrl: NavHostController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                shape = RoundedCornerShape(50)
+                shape = RoundedCornerShape(50),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Azulelectrico,
+                    contentColor = Color.Black
+                )
             ) {
                 Text(
                     text = "Cerrar sesión",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = Color.White
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
         }

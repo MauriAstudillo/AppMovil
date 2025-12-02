@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +36,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.ejemplonavycomp.data.Category
+import com.example.ejemplonavycomp.ui.theme.Azulelectrico
 import com.example.ejemplonavycomp.viewmodel.CategoryUiState
 import com.example.ejemplonavycomp.viewmodel.CategoryViewModel
 import com.example.ejemplonavycomp.viewmodel.RegistroViewModel
@@ -169,13 +171,17 @@ fun ProductoDetailContent(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(55.dp),
-            shape = RoundedCornerShape(50)
+                .height(55.dp)
+                ,
+            shape = RoundedCornerShape(50),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Azulelectrico,
+                contentColor = Color.Black
+            )
         ) {
             Text(
                 text = "Añadir al carrito",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color.White
             )
         }
     }

@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.example.ejemplonavycomp.ui.theme.Azulelectrico
 import com.example.ejemplonavycomp.viewmodel.CategoryUiState
 import com.example.ejemplonavycomp.viewmodel.CategoryViewModel
 import com.example.ejemplonavycomp.viewmodel.RegistroViewModel
@@ -77,17 +79,24 @@ fun TextScr(navCtrl: NavHostController) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = "Debes iniciar sesión para ver tu carrito",
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleLarge
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     Button(
                         onClick = { navCtrl.navigate("login") },
                         shape = RoundedCornerShape(50),
                         modifier = Modifier
-                            .width(200.dp)
-                            .height(50.dp)
+                            .width(220.dp)
+                            .height(55.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Azulelectrico,
+                            contentColor = Color.Black
+                        )
                     ) {
-                        Text("Iniciar sesión")
+                        Text(
+                            text = "Iniciar sesión",
+                            style = MaterialTheme.typography.titleLarge
+                        )
                     }
                 }
             }
@@ -115,7 +124,8 @@ fun TextScr(navCtrl: NavHostController) {
                     Text(
                         text = state.message,
                         color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
+                        style = MaterialTheme.typography.titleMedium
                     )
                 }
 
@@ -134,7 +144,7 @@ fun TextScr(navCtrl: NavHostController) {
                         ) {
                             Text(
                                 text = "Tu carrito está vacío",
-                                style = MaterialTheme.typography.bodyLarge
+                                style = MaterialTheme.typography.titleLarge
                             )
                         }
                     } else {
@@ -171,8 +181,8 @@ fun TextScr(navCtrl: NavHostController) {
                                                     contentDescription = category.name,
                                                     contentScale = ContentScale.Crop,
                                                     modifier = Modifier
-                                                        .size(45.dp)
-                                                        .clip(RoundedCornerShape(8.dp))
+                                                        .size(55.dp)
+                                                        .clip(RoundedCornerShape(10.dp))
                                                 )
 
                                                 Spacer(modifier = Modifier.width(16.dp))
@@ -180,10 +190,12 @@ fun TextScr(navCtrl: NavHostController) {
                                                 Column {
                                                     Text(
                                                         text = category.name,
+                                                        style = MaterialTheme.typography.titleLarge,
                                                         fontWeight = FontWeight.Bold
                                                     )
                                                     Text(
                                                         text = category.price,
+                                                        style = MaterialTheme.typography.titleMedium,
                                                         color = MaterialTheme.colorScheme.primary
                                                     )
                                                 }
@@ -215,12 +227,15 @@ fun TextScr(navCtrl: NavHostController) {
                                     .fillMaxWidth()
                                     .padding(16.dp)
                                     .height(55.dp),
-                                shape = RoundedCornerShape(50)
+                                shape = RoundedCornerShape(50),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Azulelectrico,
+                                    contentColor = Color.Black
+                                )
                             ) {
                                 Text(
                                     text = "Finalizar compra",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = Color.White
+                                    style = MaterialTheme.typography.titleMedium
                                 )
                             }
                         }

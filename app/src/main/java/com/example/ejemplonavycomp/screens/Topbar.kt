@@ -11,8 +11,11 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import com.example.ejemplonavycomp.ui.theme.Orbitron
+import com.example.ejemplonavycomp.ui.theme.VerdeNeon
 import com.example.ejemplonavycomp.viewmodel.RegistroViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -24,14 +27,13 @@ fun AppTopBar(navCtrl: NavHostController) {
 
     val currentUser by viewModel.currentUserEmail.collectAsState(initial = null)
     val isLoggedIn = !currentUser.isNullOrEmpty()
-
-    // Detectamos si hay pantallas detrás en el Stack
     val canGoBack = navCtrl.previousBackStackEntry != null
 
     TopAppBar(
         title = {
             Text(
                 text = "Tienda LEVELUP",
+                fontFamily = Orbitron,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.clickable {
                     navCtrl.navigate("home") {
@@ -54,7 +56,6 @@ fun AppTopBar(navCtrl: NavHostController) {
         },
 
         actions = {
-            // Carrito
             IconButton(onClick = { navCtrl.navigate("texto") }) {
                 Icon(
                     imageVector = Icons.Filled.ShoppingCart,
@@ -62,7 +63,6 @@ fun AppTopBar(navCtrl: NavHostController) {
                 )
             }
 
-            // Perfil o Login
             IconButton(onClick = {
                 if (isLoggedIn) navCtrl.navigate("perfil")
                 else navCtrl.navigate("login")
@@ -75,8 +75,10 @@ fun AppTopBar(navCtrl: NavHostController) {
         },
 
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary
+            containerColor = VerdeNeon,
+            titleContentColor = Color.Black,
+            navigationIconContentColor = Color.Black,
+            actionIconContentColor = Color.Black
         )
     )
 }
