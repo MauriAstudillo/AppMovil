@@ -3,8 +3,6 @@ package com.example.ejemplonavycomp
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -51,6 +49,7 @@ fun NavHostController() {
         composable("login") { LoginScr(navCtrl) }
         composable("perfil") { PerfilScr(navCtrl) }
         composable("registro") { RegistroScr(navCtrl) }
+        composable("compra"){ CompraScr(navCtrl) }
         composable(
             route = "producto/{productId}",
             arguments = listOf(

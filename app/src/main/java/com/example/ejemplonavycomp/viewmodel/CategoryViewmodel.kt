@@ -2,7 +2,6 @@ package com.example.ejemplonavycomp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ejemplonavycomp.data.Category
 import com.example.ejemplonavycomp.data.CategoryResponse
 import com.example.ejemplonavycomp.data.RetrofitInstance
 import kotlinx.coroutines.flow.MutableStateFlow

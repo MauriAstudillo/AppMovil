@@ -66,11 +66,6 @@ fun TextScr(navCtrl: NavHostController) {
     val currentUser by registroVM.currentUserEmail.collectAsState(initial = null)
     val uiState by categoryVM.uiState.collectAsState()
 
-    var compraRealizada by remember { mutableStateOf(false) }
-
-    /* ---------------------------
-       1. USUARIO NO LOGEADO
-       --------------------------- */
     if (currentUser.isNullOrEmpty()) {
         Scaffold(topBar = { AppTopBar(navCtrl) }) { paddingValues ->
             Box(
@@ -100,10 +95,6 @@ fun TextScr(navCtrl: NavHostController) {
         return
     }
 
-    /* ---------------------------
-       2. PANTALLA PRINCIPAL DEL CARRITO
-       --------------------------- */
-
     Scaffold(topBar = { AppTopBar(navCtrl) }) { paddingValues ->
 
         Box(
@@ -114,14 +105,12 @@ fun TextScr(navCtrl: NavHostController) {
 
             when (val state = uiState) {
 
-                /* ----- Loading ------ */
                 is CategoryUiState.Loading -> {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
 
-                /* ----- Error ------ */
                 is CategoryUiState.Error -> {
                     Text(
                         text = state.message,
@@ -130,10 +119,8 @@ fun TextScr(navCtrl: NavHostController) {
                     )
                 }
 
-                /* ----- Success: mostrar productos del gist ------ */
                 is CategoryUiState.Success -> {
 
-                    // Convertir los nombres guardados en DataStore a categorías completas
                     val allCategories = state.response.categories
 
                     val cartCategories = productos.mapNotNull { name ->
@@ -146,8 +133,7 @@ fun TextScr(navCtrl: NavHostController) {
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = if (compraRealizada) "Compra realizada"
-                                else "Tu carrito está vacío",
+                                text = "Tu carrito está vacío",
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }
@@ -221,15 +207,9 @@ fun TextScr(navCtrl: NavHostController) {
                                 }
                             }
 
-                            /* FINALIZAR COMPRA */
                             Button(
                                 onClick = {
-                                    scope.launch {
-                                        registroVM.clearCart()
-                                        compraRealizada = true
-                                        delay(2000)
-                                        compraRealizada = false
-                                    }
+                                    navCtrl.navigate("compra")
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
