@@ -29,6 +29,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -106,137 +107,157 @@ fun TextScr(navCtrl: NavHostController) {
 
     Scaffold(topBar = { AppTopBar(navCtrl) }) { paddingValues ->
 
-        Box(
+        Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
 
-            when (val state = uiState) {
+            // 🔹 ESTE BOTÓN SIEMPRE SE VE
+            TextButton(
+                onClick = { navCtrl.navigate("home") },
+                modifier = Modifier
+                    .padding(start = 12.dp, top = 4.dp)
+            ) {
+                Text(
+                    text = "← Volver a la tienda",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
 
-                is CategoryUiState.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
 
-                is CategoryUiState.Error -> {
-                    Text(
-                        text = state.message,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.align(Alignment.Center),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
+                when (val state = uiState) {
 
-                is CategoryUiState.Success -> {
-
-                    val allCategories = state.response.categories
-
-                    val cartCategories = productos.mapNotNull { name ->
-                        allCategories.find { it.name == name }
+                    is CategoryUiState.Loading -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center)
+                        )
                     }
 
-                    if (cartCategories.isEmpty()) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "Tu carrito está vacío",
-                                style = MaterialTheme.typography.titleLarge
-                            )
+                    is CategoryUiState.Error -> {
+                        Text(
+                            text = state.message,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.align(Alignment.Center),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+
+                    is CategoryUiState.Success -> {
+
+                        val allCategories = state.response.categories
+
+                        val cartCategories = productos.mapNotNull { name ->
+                            allCategories.find { it.name == name }
                         }
-                    } else {
-                        Column(modifier = Modifier.fillMaxSize()) {
 
-                            LazyColumn(
-                                modifier = Modifier.weight(1f)
+                        if (cartCategories.isEmpty()) {
+                            // 🔹 Ahora el botón seguirá visible arriba
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
                             ) {
-                                itemsIndexed(
-                                    cartCategories,
-                                    key = { index, item -> "${item.id}-$index" }
-                                ) { index, category ->
+                                Text(
+                                    text = "Tu carrito está vacío",
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                            }
+                        } else {
+                            Column(modifier = Modifier.fillMaxSize()) {
 
-                                    var visible by remember { mutableStateOf(true) }
+                                LazyColumn(
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    itemsIndexed(
+                                        cartCategories,
+                                        key = { index, item -> "${item.id}-$index" }
+                                    ) { index, category ->
 
-                                    AnimatedVisibility(
-                                        visible = visible,
-                                        exit = fadeOut(animationSpec = tween(300)) +
-                                                slideOutHorizontally { -300 }
-                                    ) {
+                                        var visible by remember { mutableStateOf(true) }
 
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(16.dp),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        AnimatedVisibility(
+                                            visible = visible,
+                                            exit = fadeOut(animationSpec = tween(300)) +
+                                                    slideOutHorizontally { -300 }
                                         ) {
 
-                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Row(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(16.dp),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.SpaceBetween
+                                            ) {
 
-                                                AsyncImage(
-                                                    model = category.thumbnail,
-                                                    contentDescription = category.name,
-                                                    contentScale = ContentScale.Crop,
-                                                    modifier = Modifier
-                                                        .size(55.dp)
-                                                        .clip(RoundedCornerShape(10.dp))
-                                                )
+                                                Row(verticalAlignment = Alignment.CenterVertically) {
 
-                                                Spacer(modifier = Modifier.width(16.dp))
-
-                                                Column {
-                                                    Text(
-                                                        text = category.name,
-                                                        style = MaterialTheme.typography.titleLarge,
-                                                        fontWeight = FontWeight.Bold
+                                                    AsyncImage(
+                                                        model = category.thumbnail,
+                                                        contentDescription = category.name,
+                                                        contentScale = ContentScale.Crop,
+                                                        modifier = Modifier
+                                                            .size(55.dp)
+                                                            .clip(RoundedCornerShape(10.dp))
                                                     )
-                                                    Text(
-                                                        text = category.price,
-                                                        style = MaterialTheme.typography.titleMedium,
-                                                        color = MaterialTheme.colorScheme.primary
+
+                                                    Spacer(modifier = Modifier.width(16.dp))
+
+                                                    Column {
+                                                        Text(
+                                                            text = category.name,
+                                                            style = MaterialTheme.typography.titleLarge,
+                                                            fontWeight = FontWeight.Bold
+                                                        )
+                                                        Text(
+                                                            text = category.price,
+                                                            style = MaterialTheme.typography.titleMedium,
+                                                            color = MaterialTheme.colorScheme.primary
+                                                        )
+                                                    }
+                                                }
+
+                                                IconButton(onClick = {
+                                                    scope.launch {
+                                                        visible = false
+                                                        delay(300)
+                                                        registroVM.removeFromCart(category.name)
+                                                    }
+                                                }) {
+                                                    Icon(
+                                                        imageVector = Icons.Default.Close,
+                                                        contentDescription = "Eliminar",
+                                                        tint = Color.Red
                                                     )
                                                 }
-                                            }
-
-                                            IconButton(onClick = {
-                                                scope.launch {
-                                                    visible = false
-                                                    delay(300)
-                                                    registroVM.removeFromCart(category.name)
-                                                }
-                                            }) {
-                                                Icon(
-                                                    imageVector = Icons.Default.Close,
-                                                    contentDescription = "Eliminar",
-                                                    tint = Color.Red
-                                                )
                                             }
                                         }
                                     }
                                 }
-                            }
 
-                            Button(
-                                onClick = {
-                                    navCtrl.navigate("compra")
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                                    .height(55.dp),
-                                shape = RoundedCornerShape(50),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Azulelectrico,
-                                    contentColor = Color.Black
-                                )
-                            ) {
-                                Text(
-                                    text = "Finalizar compra",
-                                    style = MaterialTheme.typography.titleMedium
-                                )
+                                Button(
+                                    onClick = {
+                                        navCtrl.navigate("compra")
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp)
+                                        .height(55.dp),
+                                    shape = RoundedCornerShape(50),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Azulelectrico,
+                                        contentColor = Color.Black
+                                    )
+                                ) {
+                                    Text(
+                                        text = "Finalizar compra",
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                }
                             }
                         }
                     }

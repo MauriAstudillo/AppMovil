@@ -1,6 +1,8 @@
 package com.example.ejemplonavycomp.screens
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -54,14 +57,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.*
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.navigation.NavHostController
 import java.text.NumberFormat
 import java.util.Locale
 import com.example.ejemplonavycomp.data.Category
+import com.example.ejemplonavycomp.ui.theme.Azulelectrico
 
 private fun parsePriceToInt(price: String): Int {
     val digits = price.filter { it.isDigit() }
@@ -85,8 +91,32 @@ fun CompraScr(navCtrl: NavHostController) {
     val productos by registroVM.cartItems.collectAsState(initial = emptyList())
     val currentUser by registroVM.currentUserEmail.collectAsState(initial = null)
     val uiState by categoryVM.uiState.collectAsState()
+
     var compraRealizada by remember { mutableStateOf(false) }
     var resumenCompra by remember { mutableStateOf<List<Category>>(emptyList()) }
+
+    var formError by remember { mutableStateOf("") }
+
+    val shakeOffset = remember { Animatable(0f) }
+
+    LaunchedEffect(formError) {
+        if (formError.isNotEmpty()) {
+            shakeOffset.snapTo(0f)
+            shakeOffset.animateTo(
+                targetValue = 0f,
+                animationSpec = keyframes {
+                    durationMillis = 400
+                    -25f at 50
+                    25f at 100
+                    -20f at 150
+                    20f at 200
+                    -10f at 250
+                    10f at 300
+                    0f at 400
+                }
+            )
+        }
+    }
 
     if (currentUser.isNullOrEmpty()) {
         Scaffold(topBar = { AppTopBar(navCtrl) }) { paddingValues ->
@@ -313,22 +343,47 @@ fun CompraScr(navCtrl: NavHostController) {
 
                             Spacer(modifier = Modifier.height(16.dp))
 
+                            // 🔴 MENSAJE DE ERROR CON SHAKE
+                            if (formError.isNotEmpty()) {
+                                Text(
+                                    text = formError,
+                                    color = MaterialTheme.colorScheme.error,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier
+                                        .padding(bottom = 8.dp)
+                                        .offset { IntOffset(shakeOffset.value.toInt(), 0) }
+                                )
+                            }
+
                             Button(
                                 onClick = {
                                     scope.launch {
+                                        // ✅ Validación de campos vacíos
+                                        if (
+                                            nombreTarjeta.isBlank() ||
+                                            numeroTarjeta.isBlank() ||
+                                            fechaExp.isBlank() ||
+                                            cvv.isBlank()
+                                        ) {
+                                            formError = "Introduzca datos"
+                                            return@launch
+                                        }
+                                        formError = ""
+
+                                        // Guardar historial
                                         registroVM.addPurchaseToHistory(
                                             cartCategories.map { it.name }
                                         )
-                                        // Guardamos los productos actuales para mostrar en la animación
+
+                                        // Guardamos productos para mostrar en el popup
                                         resumenCompra = cartCategories.toList()
 
                                         // Limpiar carrito
                                         registroVM.clearCart()
 
-                                        // Mostrar animación de compra realizada
+                                        // Mostrar animación
                                         compraRealizada = true
 
-                                        // Esperar un momento y volver al home
                                         delay(2500)
                                         compraRealizada = false
                                         navCtrl.navigate("home") {
@@ -340,7 +395,11 @@ fun CompraScr(navCtrl: NavHostController) {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(55.dp),
-                                shape = RoundedCornerShape(50)
+                                shape = RoundedCornerShape(50),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Azulelectrico,
+                                    contentColor = Color.Black
+                                )
                             ) {
                                 Text(
                                     text = "Pagar",

@@ -62,177 +62,184 @@ fun PerfilScr(navCtrl: NavHostController) {
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
-        uri?.let {
-            viewModel.updateProfilePicture(it.toString())
-        }
+        uri?.let { viewModel.updateProfilePicture(it.toString()) }
     }
 
     Scaffold(
         topBar = { AppTopBar(navCtrl) }
     ) { paddingValues ->
+
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+                .padding(24.dp)
         ) {
+            TextButton(
+                onClick = { navCtrl.navigate("home") },
+                modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
+            ) {
+                Text(
+                    text = "← Volver a la tienda",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
 
-            // Avatar con icono de edición
-            Box(
+            Column(
                 modifier = Modifier
-                    .size(120.dp),
-                contentAlignment = Alignment.BottomEnd
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
             ) {
 
+                // --- Avatar con icono de edición ---
                 Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primaryContainer)
-                        .clickable {
-                            imagePickerLauncher.launch("image/*")
-                        },
-                    contentAlignment = Alignment.Center
+                    modifier = Modifier.size(120.dp),
+                    contentAlignment = Alignment.BottomEnd
                 ) {
-                    if (profilePicUri.isNullOrEmpty()) {
+
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primaryContainer)
+                            .clickable { imagePickerLauncher.launch("image/*") },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (profilePicUri.isNullOrEmpty()) {
+                            Icon(
+                                imageVector = Icons.Filled.AccountCircle,
+                                contentDescription = "Avatar usuario",
+                                modifier = Modifier.size(90.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        } else {
+                            AsyncImage(
+                                model = profilePicUri,
+                                contentDescription = "Foto de perfil",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .offset(x = 4.dp, y = 4.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary)
+                            .clickable { imagePickerLauncher.launch("image/*") },
+                        contentAlignment = Alignment.Center
+                    ) {
                         Icon(
-                            imageVector = Icons.Filled.AccountCircle,
-                            contentDescription = "Avatar usuario",
-                            modifier = Modifier.size(90.dp),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    } else {
-                        AsyncImage(
-                            model = profilePicUri,
-                            contentDescription = "Foto de perfil",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Cambiar foto de perfil",
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(18.dp)
                         )
                     }
                 }
 
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .offset(x = 4.dp, y = 4.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary)
-                        .clickable {
-                            imagePickerLauncher.launch("image/*")
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Cambiar foto de perfil",
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(18.dp)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Perfil de usuario",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Correo electrónico / Nombre de usuario",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = currentEmail ?: "No disponible",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium
                     )
                 }
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            Text(
-                text = "Perfil de usuario",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
-            )
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Contraseña",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
 
-            Spacer(modifier = Modifier.height(8.dp))
-            HorizontalDivider()
-            Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = when {
+                                currentPassword.isNullOrEmpty() -> "No disponible"
+                                showPassword -> currentPassword!!
+                                else -> "•".repeat(currentPassword!!.length.coerceAtLeast(6))
+                            },
+                            style = MaterialTheme.typography.bodyLarge
+                        )
 
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = "Correo electrónico / Nombre de usuario",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = currentEmail ?: "No disponible",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium
-                )
-            }
+                        TextButton(onClick = { showPassword = !showPassword }) {
+                            Text(if (showPassword) "Ocultar" else "Mostrar")
+                        }
+                    }
+                }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = "Contraseña",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
+                // --- Historial ---
+                Button(
+                    onClick = { navCtrl.navigate("historial") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    shape = RoundedCornerShape(50),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Azulelectrico,
+                        contentColor = Color.Black
+                    )
                 ) {
                     Text(
-                        text = when {
-                            currentPassword.isNullOrEmpty() -> "No disponible"
-                            showPassword -> currentPassword!!
-                            else -> "•".repeat(currentPassword!!.length.coerceAtLeast(6))
-                        },
-                        style = MaterialTheme.typography.bodyLarge
+                        text = "Historial",
+                        style = MaterialTheme.typography.titleMedium
                     )
-
-                    TextButton(onClick = { showPassword = !showPassword }) {
-                        Text(if (showPassword) "Ocultar" else "Mostrar")
-                    }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                onClick = { navCtrl.navigate("historial") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                shape = RoundedCornerShape(50),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Azulelectrico,
-                    contentColor = Color.Black
-                )
-            ) {
-                Text(
-                    text = "Historial",
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Botón Cerrar sesión
-            Button(
-                onClick = {
-                    viewModel.logout()
-                    navCtrl.navigate("login") {
-                        popUpTo("perfil") { inclusive = true }
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                shape = RoundedCornerShape(50),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Azulelectrico,
-                    contentColor = Color.Black
-                )
-            ) {
-                Text(
-                    text = "Cerrar sesión",
-                    style = MaterialTheme.typography.titleMedium
-                )
+                // ---  Cerrar Sesion ---
+                Button(
+                    onClick = {
+                        viewModel.logout()
+                        navCtrl.navigate("login") {
+                            popUpTo("perfil") { inclusive = true }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    shape = RoundedCornerShape(50),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Azulelectrico,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text(
+                        text = "Cerrar sesión",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
         }
     }
