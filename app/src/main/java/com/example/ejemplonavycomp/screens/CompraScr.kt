@@ -316,6 +316,9 @@ fun CompraScr(navCtrl: NavHostController) {
                             Button(
                                 onClick = {
                                     scope.launch {
+                                        registroVM.addPurchaseToHistory(
+                                            cartCategories.map { it.name }
+                                        )
                                         // Guardamos los productos actuales para mostrar en la animación
                                         resumenCompra = cartCategories.toList()
 

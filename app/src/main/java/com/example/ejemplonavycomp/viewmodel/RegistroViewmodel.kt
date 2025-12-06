@@ -33,12 +33,27 @@ class RegistroViewModel(context: Context) : ViewModel() {
         emptyList()
     )
 
-    // --- Foto de perfil 🖼 ---
+    // --- Foto de perfil ---
     val profilePictureUri = prefs.profilePictureUri.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(),
         null
     )
+
+    val purchaseHistory = prefs.purchaseHistory.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        emptyList()
+    )
+
+    fun addPurchaseToHistory(productNames: List<String>) {
+        viewModelScope.launch {
+            prefs.addPurchaseToHistory(productNames)
+        }
+    }
+
+
+    // Foto de perfil
 
     fun updateProfilePicture(uri: String) {
         viewModelScope.launch {
@@ -46,7 +61,7 @@ class RegistroViewModel(context: Context) : ViewModel() {
         }
     }
 
-    // --- Registro / login ---
+    // Registro / login
     fun saveUser(email: String, password: String) {
         viewModelScope.launch {
             prefs.saveUser(email, password)
@@ -69,7 +84,7 @@ class RegistroViewModel(context: Context) : ViewModel() {
         return prefs.getPasswordForUser(email)
     }
 
-    // --- Carrito acciones ---
+    // Carrito acciones
     fun addToCart(productName: String) {
         viewModelScope.launch {
             prefs.addToCart(productName)

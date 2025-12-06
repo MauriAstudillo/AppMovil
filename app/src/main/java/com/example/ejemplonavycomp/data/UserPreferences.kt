@@ -19,7 +19,10 @@ class UserPreferences(private val context: Context) {
         val CURRENT_USER_EMAIL = stringPreferencesKey("current_user")
         val CART_JSON = stringPreferencesKey("cart_json")
 
-        // 🆕 URI de la foto de perfil (global por ahora)
+        // 🆕 Historial de compras por usuario
+        val PURCHASE_HISTORY_JSON = stringPreferencesKey("purchase_history_json")
+
+        // 🖼 URI de la foto de perfil (global por ahora)
         val PROFILE_PICTURE_URI = stringPreferencesKey("profile_picture_uri")
     }
 
@@ -63,6 +66,7 @@ class UserPreferences(private val context: Context) {
     suspend fun logout() {
         context.dataStore.edit { prefs ->
             prefs.remove(CURRENT_USER_EMAIL)
+            // Opcional: podrías limpiar cosas asociadas al usuario actual aquí si quisieras
         }
     }
 
@@ -126,6 +130,38 @@ class UserPreferences(private val context: Context) {
             val allCarts = if (cartJson != null) JSONObject(cartJson) else JSONObject()
             allCarts.put(currentUser, JSONArray())
             prefs[CART_JSON] = allCarts.toString()
+        }
+    }
+
+    // --- Historial de compras ---
+    // Lista de nombres de productos comprados por el usuario actual
+    val purchaseHistory: Flow<List<String>> = context.dataStore.data.map { prefs ->
+        val historyJson = prefs[PURCHASE_HISTORY_JSON]
+        val currentUser = prefs[CURRENT_USER_EMAIL]
+
+        if (historyJson != null && currentUser != null) {
+            val allHistory = JSONObject(historyJson)
+            val userHistory = allHistory.optJSONArray(currentUser)
+            userHistory?.let {
+                List(it.length()) { i -> it.getString(i) }
+            } ?: emptyList()
+        } else emptyList()
+    }
+
+    suspend fun addPurchaseToHistory(productNames: List<String>) {
+        context.dataStore.edit { prefs ->
+            val currentUser = prefs[CURRENT_USER_EMAIL] ?: return@edit
+            val historyJson = prefs[PURCHASE_HISTORY_JSON]
+            val allHistory = if (historyJson != null) JSONObject(historyJson) else JSONObject()
+
+            val userHistory = allHistory.optJSONArray(currentUser) ?: JSONArray()
+
+            productNames.forEach { name ->
+                userHistory.put(name)
+            }
+
+            allHistory.put(currentUser, userHistory)
+            prefs[PURCHASE_HISTORY_JSON] = allHistory.toString()
         }
     }
 

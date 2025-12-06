@@ -62,6 +62,7 @@ fun NavHostController() {
             composable("perfil")  { PerfilScr(navCtrl) }
             composable("registro"){ RegistroScr(navCtrl) }
             composable("compra")  { CompraScr(navCtrl) }
+            composable("historial") { HistorialScr(navCtrl)}
 
             composable(
                 route = "producto/{productId}",

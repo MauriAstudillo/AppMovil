@@ -58,6 +58,7 @@ fun PerfilScr(navCtrl: NavHostController) {
     val currentPassword by viewModel.currentUserPassword.collectAsState()
     val profilePicUri by viewModel.profilePictureUri.collectAsState()
     var showPassword by remember { mutableStateOf(false) }
+
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
@@ -78,7 +79,7 @@ fun PerfilScr(navCtrl: NavHostController) {
             verticalArrangement = Arrangement.Top
         ) {
 
-
+            // Avatar con icono de edición
             Box(
                 modifier = Modifier
                     .size(120.dp),
@@ -91,7 +92,6 @@ fun PerfilScr(navCtrl: NavHostController) {
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primaryContainer)
                         .clickable {
-                            // Abrir selector de imagen
                             imagePickerLauncher.launch("image/*")
                         },
                     contentAlignment = Alignment.Center
@@ -142,9 +142,7 @@ fun PerfilScr(navCtrl: NavHostController) {
             )
 
             Spacer(modifier = Modifier.height(8.dp))
-
             HorizontalDivider()
-
             Spacer(modifier = Modifier.height(16.dp))
 
             Column(
@@ -195,6 +193,26 @@ fun PerfilScr(navCtrl: NavHostController) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            Button(
+                onClick = { navCtrl.navigate("historial") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(50),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Azulelectrico,
+                    contentColor = Color.Black
+                )
+            ) {
+                Text(
+                    text = "Historial",
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón Cerrar sesión
             Button(
                 onClick = {
                     viewModel.logout()
