@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.litert.support.api)
     implementation(libs.androidx.animation)
     testImplementation(libs.junit)
+    testImplementation(libs.junit.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -83,4 +84,12 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.gson)
     implementation(libs.coil.compose)
+    testImplementation(libs.junit)
+
+// Para coroutines
+    testImplementation(libs.kotlinx.coroutines.test)
+    // MockK para simular objetos (muy útil para el Context y DataStore)
+    testImplementation(libs.mockk)
+    testImplementation(libs.androidx.core.testing)
+
 }
