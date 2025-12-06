@@ -19,10 +19,9 @@ class UserPreferences(private val context: Context) {
         val CURRENT_USER_EMAIL = stringPreferencesKey("current_user")
         val CART_JSON = stringPreferencesKey("cart_json")
 
-        // 🆕 Historial de compras por usuario
+        //Historial de compras por usuario
         val PURCHASE_HISTORY_JSON = stringPreferencesKey("purchase_history_json")
 
-        // 🖼 URI de la foto de perfil (global por ahora)
         val PROFILE_PICTURE_URI = stringPreferencesKey("profile_picture_uri")
     }
 

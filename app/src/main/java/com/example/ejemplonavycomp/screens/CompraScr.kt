@@ -343,7 +343,6 @@ fun CompraScr(navCtrl: NavHostController) {
 
                             Spacer(modifier = Modifier.height(16.dp))
 
-                            // 🔴 MENSAJE DE ERROR CON SHAKE
                             if (formError.isNotEmpty()) {
                                 Text(
                                     text = formError,
@@ -358,7 +357,7 @@ fun CompraScr(navCtrl: NavHostController) {
                             Button(
                                 onClick = {
                                     scope.launch {
-                                        // ✅ Validación de campos vacíos
+                                        // Validación de campos vacíos
                                         if (
                                             nombreTarjeta.isBlank() ||
                                             numeroTarjeta.isBlank() ||
